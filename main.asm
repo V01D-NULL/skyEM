@@ -20,6 +20,9 @@ call print
 mov si, msg
 call print
 
+mov al,0xb6     ; Flap sound
+out (0x43),al
+
 ; call cli
 ; call shell
 

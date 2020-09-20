@@ -1,7 +1,5 @@
 mode_text:
     mov ax, 0x03
-;     mov ah, 0x00
-;     mov al, 0x07
     int 0x10
     mov si, textMode
     call print

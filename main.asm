@@ -8,6 +8,7 @@
 ;
 ;;;;;;;;;;;;;;;;;;;;;
 
+; FIND OUT HOW TO  PRINT COLORFUL CHARACTERS AND MAKE A GAME SELECTION SCREEN OUT OF IT OR SOMETHING
 
 call mode_text
 
@@ -20,8 +21,8 @@ call print
 mov si, msg
 call print
 
-mov al,0xb6     ; Flap sound
-out (0x43),al
+; mov al,0xb6     ; Flap sound
+; out (0x43),al
 
 ; call cli
 ; call shell

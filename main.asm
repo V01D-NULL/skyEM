@@ -15,16 +15,10 @@ call mode_text
 mov si, version
 call print
 
-; mov bx, sleep_time
-; call sleep
-
 mov si, msg
 call print
 
-; mov al,0xb6     ; Flap sound
-; out (0x43),al
-
-; call cli
+call cli
 ; call shell
 
 jmp $
@@ -36,11 +30,12 @@ cli:
     je nl
     cmp al, KEY_W
     je w_key
-    cmp al, exit
-    je sExit
+    cmp al, txt_mode
+    je new_mode_text
+    cmp al, vid_mode
+    je vid_mode
     mov ah, 0x0E
     int 0x10
-;     mov console_in_buffer, [ al ]
     jmp cli
 
 w_key:
@@ -53,17 +48,24 @@ nl:
     call print
     jmp cli
 
-sExit:
-    int 0x19 ; Reboot
+new_mode_text:  
+    call mode_text
+    ret
+    
+new_mode_video:
+    call mode_video
+    ret
     
 %include "stdio/print.asm"
 %include "vga/mode.asm"
 ; %include "drivers/keyb.asm"
+%include "vga/gfx_256.asm"
 
 version db "skyEM - The Skyline retro game Emulator - 16 bits", 0x0A, 0x0D, 0
 newline db 0x0A, 0x0D, 0 ; Put this in keyb.asm
 exit db "exit", 0x0D
-console_in_buffer db "", 0
+txt_mode db "s", 0
+vid_mode db "v", 0
 msg db 0xDF, 0 ; Square block - To render extended ascii chars just put in the hex value of the ascii char
 
 times 510-($-$$) db 0

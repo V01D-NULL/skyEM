@@ -3,7 +3,7 @@ skyEM is a game emulator, that runs in 16 bit real mode.
 
 Whatdoes "skyEM" mean?
 
-  `skyEM stands for Skyline Emulator`
+      `skyEM stands for Skyline Emulator`
 
 NOTE: This does not emulate any device, it just try's to emulate retro games as best it can
 

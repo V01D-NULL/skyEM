@@ -3,10 +3,6 @@ skyEM is a game emulator, that runs in 16 bit real mode.
 It can be run off of a floppy disk (not tested), usb drive (not tested), and an emulator (tested).
 The emulator used for testing is Qemu --> qemu-system-i386 -fda bin/skyEM.img
 
-Tools used:
-- nasm 2.15.04
-- GNU Make 4.3 
-
 What does "skyEM" mean?
   - skyEM stands for Skyline Emulator
 
@@ -15,6 +11,9 @@ I would like to contribute, what can I do?
 
 NOTE: skyEM does not emulate any device in particular, it just try's to emulate retro games as best it can.
 
+# Tools used
+  - nasm 2.15.04
+  - GNU Make 4.3 
 
 # Disclaimer
 - This project is NOT finished -> ((VERY) Early stage of development - Do not expect flawless and pretty formatted code)

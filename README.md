@@ -21,4 +21,4 @@ NOTE: skyEM does not emulate any device in particular, it just try's to emulate 
 - I am still learning assembly, and this project is intended to help me expand my knowledge. (If you find malformed code, feel free to open an issue or contribute to the project)
 
 # Honourable mentions 
-- Michael Petch who's answer on [this]((https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag)) stackoverflow thread helped me address more than 512 bytes after I tried alot of stuff.
+- Michael Petch who's answer on [this](https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag) stackoverflow thread helped me address more than 512 bytes after I tried alot of stuff

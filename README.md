@@ -1,5 +1,5 @@
 # skyEM
-**skyEM** is a game emulator, that runs in 16 bit real mode.
+_skyEM_ is a game emulator, that runs in 16 bit real mode.
 It can be run off of a floppy disk (not tested), usb drive (not tested), and an emulator (tested).
 The emulator used for testing is Qemu --> qemu-system-i386 -fda bin/skyEM.img
 
@@ -21,4 +21,4 @@ NOTE: skyEM does not emulate any device in particular, it just try's to emulate 
 - I am still learning assembly, and this project is intended to help me expand my knowledge. (If you find malformed code, feel free to open an issue or contribute to the project)
 
 # Honourable mentions 
-- Michael Petch who's answer on this stackoverflow thread helped me address more than 512 bytes after I tried alot of stuff (https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag)
+- Michael Petch who's answer on this (stackoverflow thread) [https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag] helped me address more than 512 bytes after I tried alot of stuff.

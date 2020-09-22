@@ -1,5 +1,5 @@
 # skyEM
-######skyEM is a game emulator, that runs in 16 bit real mode.
+**skyEM** is a game emulator, that runs in 16 bit real mode.
 It can be run off of a floppy disk (not tested), usb drive (not tested), and an emulator (tested).
 The emulator used for testing is Qemu --> qemu-system-i386 -fda bin/skyEM.img
 

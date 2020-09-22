@@ -1,3 +1,7 @@
+#
+#	I am aware that this is a noobish makefile, don't worry, the file will be updated as time goes by.
+#
+
 all: compile run
 
 compile:

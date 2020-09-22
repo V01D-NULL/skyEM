@@ -17,7 +17,7 @@ NOTE: skyEM does not emulate any device in particular, it just try's to emulate 
 
 # Disclaimer
 - This project is NOT finished -> ((VERY) Early stage of development - Do not expect flawless and pretty formatted code)
-- This code may break your device if you are not carefull, the author of this assumes no liability.
+- USE THIS CODE AT YOUR OWN RISK, the author assumes no liability.
 - I am still learning assembly, and this project is intended to help me expand my knowledge. (If you find malformed code, feel free to open an issue or contribute to the project)
 
 # Honourable mentions 

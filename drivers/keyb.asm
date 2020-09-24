@@ -9,12 +9,11 @@
     KEY_HELP equ 0x68        ; "h"
     KEY_REBOOT equ 0x72      ; "r"
     KEY_SHUTDOWN equ 0x73    ; "s"
+    KEY_GET_GAMES equ 0x67   ; "g"
 ;
 ;;;;;;;;;;;;;;;;;;;;;
 
 shell:
-;     mov si, shell_init_msg
-;     call print
     mov si, shell_input_msg
     call print
     jmp commandLine
@@ -42,10 +41,13 @@ commandLine:
     cmp al, KEY_SHUTDOWN
     je shutdown
     
+    cmp al, KEY_GET_GAMES
+    je kb_get_games
+    
     ; Print input
     mov ah, 0x0E
     int 0x10
-        
+  
 nl:
     mov si, newline
     call print
@@ -79,7 +81,14 @@ shutdown:
     mov cx, 0x0003
     int 0x15
   
-; shell_init_msg db "Loaded into skyEM shell", 0x0A, 0x0D, 0
+kb_get_games:
+    mov si, newline
+    call print
+    call get_games
+    mov si, shell_input_msg 
+    call print
+    jmp commandLine
+  
 shell_input_msg db "skyEM{-}> ", 0
 newline db 0x0A, 0x0D, 0
 help_menu_text db 0x0A, 0x0D, "Help menu", 0x0A, 0x0D, "To toggle between screen resolutions, press t (text) or v (video).", 0x0A, 0x0D, "To list available games, type g", 0x0A, 0x0D, "To choose a game, type it's corresponding number.", 0x0A, 0x0D, "To play the selected game, press the spacebar", 0x0A, 0x0D, "To view the help menu, press h", 0x0A, 0x0D, "To reboot the device, press r", 0x0A, 0x0D, "To shutdown the device, press s", 0x0A, 0x0D, 0

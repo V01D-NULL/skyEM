@@ -1,0 +1,160 @@
+     1                                  ; This file just loads skyEM past the 512 byte boundary
+     2                                  ;
+     3                                  ;   Thanks to Michael Petch on this stackoverflow thread who's answer helped me with this: https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag
+     4                                  ;   (NOTE: This was NOT my question, and I have tried many things with no success)
+     5                                  
+     6                                  %include "stage2.inc"
+     7                              <1> SKYEM_STAGE2_ADDRESS equ 0x07e00
+     8                              <1> 
+     9                              <1> STAGE2_RUN_SEGMENT equ 0x0000
+    10                              <1> STAGE2_RUN_OFFSET equ SKYEM_STAGE2_ADDRESS
+     7                                  
+     8                                  STAGE2_LOAD_SEG equ SKYEM_STAGE2_ADDRESS >> 4
+     9                                  
+    10                                  STAGE2_LBA_START equ 1
+    11                                  STAGE2_LBA_END equ STAGE2_LBA_START + NUM_OF_STAGE2_SECTORS
+    12                                  
+    13                                  DISK_RETRIES equ 3          ; The floppy disk may fail to spin so a retry of up to 3 times is required
+    14                                  
+    15                                  [bits 16]
+    16                                  [org 0x7c00]
+    17                                  
+    18                                  %include "bpb.inc"
+    19 00000000 EB3C                <1>     jmp boot_start
+    20                              <1> 
+    21 00000002 90                  <1>     TIMES 3-($-$$) DB 0x90   ; Support 2 or 3 byte encoded JMPs before BPB.
+    22                              <1> 
+    23                              <1> 
+    24                              <1> 
+    25                              <1> bpb_disk_info:
+    26                              <1>     ; Dos 4.0 EBPB 1.44MB floppy
+    27 00000003 6D6B66732E666174    <1>     OEMname:           db    "mkfs.fat"  ; mkfs.fat is what OEMname mkdosfs uses
+    28 0000000B 0002                <1>     bytesPerSector:    dw    512
+    29 0000000D 01                  <1>     sectPerCluster:    db    1
+    30 0000000E 0100                <1>     reservedSectors:   dw    1
+    31 00000010 02                  <1>     numFAT:            db    2
+    32 00000011 E000                <1>     numRootDirEntries: dw    224
+    33 00000013 400B                <1>     numSectors:        dw    2880
+    34 00000015 F0                  <1>     mediaType:         db    0xf0
+    35 00000016 0900                <1>     numFATsectors:     dw    9
+    36 00000018 1200                <1>     sectorsPerTrack:   dw    18
+    37 0000001A 0200                <1>     numHeads:          dw    2
+    38 0000001C 00000000            <1>     numHiddenSectors:  dd    0
+    39 00000020 00000000            <1>     numSectorsHuge:    dd    0
+    40 00000024 00                  <1>     driveNum:          db    0
+    41 00000025 00                  <1>     reserved:          db    0
+    42 00000026 29                  <1>     signature:         db    0x29
+    43 00000027 1A5A7E2D            <1>     volumeID:          dd    0x2d7e5a1a
+    44 0000002B 4E4F204E414D452020- <1>     volumeLabel:       db    "NO NAME    "
+    44 00000034 2020                <1>
+    45 00000036 4641543132202020    <1>     fileSysType:       db    "FAT12   "
+    19                                  
+    20                                  boot_start:
+    21 0000003E 31C0                        xor ax, ax
+    22 00000040 8ED8                        mov ds, ax
+    23 00000042 8ED0                        mov ss, ax
+    24 00000044 BC007C                      mov sp, 0x7c00
+    25                                      
+    26                                  load_stage2:
+    27 00000047 8816[BA00]                  mov [disk], dl ; Save disk number
+    28 0000004B BFE007                      mov di, STAGE2_LOAD_SEG
+    29 0000004E BE0100                      mov si, STAGE2_LBA_START
+    30 00000051 EB15                        jmp .check_last_lba
+    31                                     
+    32                                  
+    33                                  ; This can run atleast 3 times due to the platters of the floppy disk not always spinning when they are suppossed to
+    34                                  .read_sector:
+    35 00000053 BD0300                      mov bp, DISK_RETRIES
+    36 00000056 E83F00                      call lba_to_chs      ; Convert lba to chs
+    37 00000059 8EC7                        mov es, di           ;
+    38 0000005B 31DB                        xor bx, bx           ; Set bx to 0
+    39                                  
+    40                                  .retry:
+    41 0000005D B80102                      mov ax, 0x0201              ; Call function 0x02 of int 13h (read sectors)  AL = 1 = Sectors to read
+    42 00000060 CD13                        int 0x13                    ; BIOS Disk interrupt call
+    43 00000062 7215                        jc .disk_error              ; If CF set then disk error
+    44                                  
+    45                                  .success:
+    46 00000064 83C720                      add di, 512>>4              ; Advance to next 512 byte segment (0x20*16=512)
+    47 00000067 46                          inc si                      ; Next LBA
+    48                                  
+    49                                  .check_last_lba:
+    50 00000068 83FE03                      cmp si, STAGE2_LBA_END
+    51 0000006B 7CE6                        jl .read_sector
+    52                                  
+    53                                      
+    54                                  .stage2_loaded:
+    55 0000006D B80000                      mov ax, STAGE2_RUN_SEGMENT  ; Set up the segments appropriate for Stage2 to run
+    56 00000070 8ED8                        mov ds, ax
+    57 00000072 8EC0                        mov es, ax
+    58                                      ; FAR JMP to the Stage2 entry point at physical address 0x07e00
+    59 00000074 EA007E0000                  jmp STAGE2_RUN_SEGMENT:STAGE2_RUN_OFFSET
+    60                                  
+    61                                  
+    62                                  .disk_error:
+    63 00000079 30E4                        xor ah, ah                  ; Int13h/AH=0 is drive reset
+    64 0000007B CD13                        int 0x13
+    65 0000007D 4D                          dec bp                      ; Decrease retry count
+    66 0000007E 7DDD                        jge .retry                  ; If retry count not exceeded then try again
+    67                                  
+    68                                      
+    69                                  error_end:
+    70                                      ; Unrecoverable error; print drive error; enter infinite loop
+    71 00000080 BE[BB00]                    mov si, diskErrorMsg        ; Display disk error message
+    72 00000083 E80400                      call print_string
+    73 00000086 FA                          cli
+    74                                  
+    75                                  .error_loop:
+    76 00000087 F4                          hlt
+    77 00000088 EBFD                        jmp .error_loop
+    78                                  
+    79                                  print_string:
+    80 0000008A B40E                        mov ah, 0x0e               
+    81 0000008C 31DB                        xor bx, bx                 
+    82 0000008E EB02                        jmp .getch
+    83                                  
+    84                                  .repeat:
+    85 00000090 CD10                        int 0x10                   
+    86                                  
+    87                                  .getch:
+    88 00000092 AC                          lodsb                       
+    89 00000093 84C0                        test al,al                  
+    90 00000095 75F9                        jnz .repeat                 
+    91                                  
+    92                                  .end:
+    93 00000097 C3                          ret
+    94                                      
+    95                                  lba_to_chs:
+    96 00000098 50                          push ax                     ; Preserve AX
+    97 00000099 89F0                        mov ax, si                  ; Copy LBA to AX
+    98 0000009B 31D2                        xor dx, dx                  ; Upper 16-bit of 32-bit value set to 0 for DIV
+    99 0000009D F736[1800]                  div word [sectorsPerTrack]  ; 32-bit by 16-bit DIV : LBA / SPT
+   100 000000A1 88D1                        mov cl, dl                  ; CL = S = LBA mod SPT
+   101 000000A3 FEC1                        inc cl                      ; CL = S = (LBA mod SPT) + 1
+   102 000000A5 31D2                        xor dx, dx                  ; Upper 16-bit of 32-bit value set to 0 for DIV
+   103 000000A7 F736[1A00]                  div word [numHeads]         ; 32-bit by 16-bit DIV : (LBA / SPT) / HEADS
+   104 000000AB 88D6                        mov dh, dl                  ; DH = H = (LBA / SPT) mod HEADS
+   105 000000AD 8A16[BA00]                  mov dl, [disk]        ; boot device, not necessary to set but convenient
+   106 000000B1 88C5                        mov ch, al                  ; CH = C(lower 8 bits) = (LBA / SPT) / HEADS
+   107 000000B3 C0E406                      shl ah, 6                   ; Store upper 2 bits of 10-bit Cylinder into
+   108 000000B6 08E1                        or  cl, ah                  ;     upper 2 bits of Sector (CL)
+   109 000000B8 58                          pop ax                      ; Restore scratch registers
+   110 000000B9 C3                          ret
+   111                                      
+   112                                  ; Disk device is stored in 'dl' by the bios. disk will save that disk device incase dl get's overwritten
+   113                                  disk:
+   114 000000BA 00                          db 0x00
+   115                                  
+   116 000000BB 556E7265636F766572-     diskErrorMsg:    db "Unrecoverable disk error!", 0
+   116 000000C4 61626C65206469736B-
+   116 000000CD 206572726F722100   
+   117                                  
+   118 000000D5 00<rep 129h>            TIMES 510-($-$$) db  0
+   119 000001FE 55AA                    dw 0xaa55
+   120                                  
+   121                                  NUM_OF_STAGE2_SECTORS equ (stage2_end-stage2_start+511) / 512
+   122                                  
+   123                                  stage2_start:
+   124 00000200 <bin 259h>                  incbin "stage2.bin"
+   125                                  
+   126                                  stage2_end:

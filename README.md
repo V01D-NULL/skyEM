@@ -22,3 +22,4 @@ I would like to contribute, what can I do?
 
 ### Honourable mentions 
 - Michael Petch who's answer on [this](https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag) stackoverflow thread helped me address more than 512 bytes after I tried alot of stuff
+- fuz who helped me with [sideways scrolling](https://stackoverflow.com/a/64037486/13658028)

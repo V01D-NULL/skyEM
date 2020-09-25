@@ -32,9 +32,12 @@ scroll:
     
 exit:
     call mode_text
+    
+    ; Clear registers
     xor ax, ax
     mov ds, ax
     mov es, ax
+    
     jmp shell
 
 

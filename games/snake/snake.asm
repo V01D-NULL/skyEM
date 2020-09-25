@@ -32,10 +32,17 @@ snake_main_loop:
     je snake_down
     
     cmp al, key_quit
-    je exit
+    je .exit
     
     jmp snake_main_loop
     
+.exit:
+    call mode_text
+    ; reset the x, y cursor positions
+    mov dl, 0
+    mov dh, 0
+    call set_cur
+    jmp exit
     
 snake_up:
     call mode_text
@@ -58,11 +65,10 @@ snake_up:
     
 snake_down:
     ; Set cursor position
-;     mov ah, 0x02
-;     mov bh, 0
-;     mov dh, 1 ; y -> Use variables for y, x, and increment them. Do some cmp logic to check which should be incremented
-;     mov dl, 0 ; x
-    int 0x10
+    add byte [ y ], 1
+    mov dh, [ y ]
+    mov dl, [ x ]
+    call set_cur
     
     call character_controller
     jmp get_snake_offset

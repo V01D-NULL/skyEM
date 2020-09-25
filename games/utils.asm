@@ -15,7 +15,6 @@ get_cur:
     ; Returns: 
     ;   dh = row
     ;   dl = column
-    ;
     ; (The rest is not needed)
     
     

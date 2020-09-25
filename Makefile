@@ -1,6 +1,6 @@
 HEXDMP = xxd
 NASM = nasm
-NFLAGS = -f bin
+NFLAGS = -f bin -w+orphan-labels
 TARGET = skyEM.img
 HEXDMP_OUT = debug/$(TARGET)_dump.hex
 QEMU = qemu-system-i386

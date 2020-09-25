@@ -13,6 +13,8 @@ call shell
 
 jmp $
 
+
+
 welcome_msg db "skyEM - The Skyline retro game Emulator - 16 bits", 0x0A, 0x0D, "(Press h for help)", 0x0A, 0x0D, 0
 
 %include "vga/mode.asm"

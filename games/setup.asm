@@ -44,7 +44,7 @@ return:
     call print
     jmp shell
     
-snake_msg db "Playing snake game...", 0x0A, 0x0D, 0
 games_prompt db "Choose your game: ", 0
 %include "games/snake/snake.asm"
 %include "games/chrome_dino/chrome_dino.asm"
+%include "games/utils.asm"

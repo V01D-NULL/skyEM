@@ -24,7 +24,7 @@ load_game:
     int 0x16
     
     cmp al, snake ; 1
-    je games_play_snake
+    je games_play_snake ; REPLACE THIS WITH A CUSTOM GAME
     
     cmp al, chrome_dino
     je games_play_dino
@@ -45,6 +45,6 @@ return:
     jmp shell
     
 games_prompt db "Choose your game: ", 0
-%include "games/snake/snake.asm"
-%include "games/chrome_dino/chrome_dino.asm"
+; How to include your games:
+; %include "games/<your game>/<game.asm>"
 %include "games/utils.asm"

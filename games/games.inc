@@ -2,6 +2,7 @@
 ; games.inc contains the values of the game type. (If the user types 1, 2, etc. Game snake, chrome_dino_game, etc will be loaded)
 ;
 
+; Replace this with your games
 snake equ 0x31
 chrome_dino equ 0x32
 

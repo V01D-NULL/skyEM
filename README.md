@@ -16,10 +16,9 @@ I would like to contribute, what can I do?
   - GNU Make 4.3 
 
 ### Disclaimer
-- This project is NOT finished -> ((VERY) Early stage of development - Do not expect flawless and pretty formatted code)
 - USE THIS CODE AT YOUR OWN RISK, the author assumes no liability.
 - I am still learning assembly, and this project is intended to help me expand my knowledge. (If you find malformed code, feel free to open an issue or contribute to the project)
-- skyEM does not emulate any device in particular, it just try's to emulate retro games as best it can.
+- skyEM does not emulate any device in particular, it just try's to be a "gameboy" for bootsectors as best it can.
 
 ### Honourable mentions 
 - Michael Petch who's answer on [this](https://stackoverflow.com/questions/53858770/how-to-fix-os-asm113-error-times-value-138-is-negative-in-assembly-languag) stackoverflow thread helped me address more than 512 bytes after I tried alot of stuff
